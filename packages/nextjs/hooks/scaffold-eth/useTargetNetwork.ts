@@ -1,29 +1,29 @@
+"use client";
+
 import { useEffect } from "react";
 import { useNetwork } from "wagmi";
-import scaffoldConfig from "~~/scaffold.config";
+import type { ChainWithAttributes } from "~~/utils/scaffold-eth";
 import { useGlobalState } from "~~/services/store/store";
-import { ChainWithAttributes } from "~~/utils/scaffold-eth";
-import { NETWORKS_EXTRA_DATA } from "~~/utils/scaffold-eth";
 
-/**
- * Retrieves the connected wallet's network from scaffold.config or defaults to the 0th network in the list if the wallet is not connected.
- */
 export function useTargetNetwork(): { targetNetwork: ChainWithAttributes } {
   const { chain } = useNetwork();
-  const targetNetwork = useGlobalState(({ targetNetwork }) => targetNetwork);
-  const setTargetNetwork = useGlobalState(({ setTargetNetwork }) => setTargetNetwork);
+
+  // ambil dari Zustand sebagai HOOK (function)
+  const targetNetwork = useGlobalState((s) => s.targetNetwork);
+  const setTargetNetwork = useGlobalState((s) => s.setTargetNetwork);
 
   useEffect(() => {
-    const newSelectedNetwork = scaffoldConfig.targetNetworks.find(targetNetwork => targetNetwork.id === chain?.id);
-    if (newSelectedNetwork && newSelectedNetwork.id !== targetNetwork.id) {
-      setTargetNetwork(newSelectedNetwork);
+    if (chain && chain.id !== targetNetwork.id) {
+      // biarkan tombol switch-network kamu yang handle real switching;
+      // ini hanya menyamakan state agar UI konsisten
+      setTargetNetwork({
+        ...(targetNetwork as ChainWithAttributes),
+        id: chain.id as number,
+        name: chain.name || targetNetwork.name,
+      });
     }
-  }, [chain?.id, setTargetNetwork, targetNetwork.id]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chain?.id]);
 
-  return {
-    targetNetwork: {
-      ...targetNetwork,
-      ...NETWORKS_EXTRA_DATA[targetNetwork.id],
-    },
-  };
+  return { targetNetwork };
 }

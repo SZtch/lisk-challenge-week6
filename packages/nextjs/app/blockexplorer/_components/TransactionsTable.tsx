@@ -3,7 +3,7 @@ import { formatEther } from "viem";
 import { Address } from "~~/components/scaffold-eth";
 import { useTargetNetwork } from "~~/hooks/scaffold-eth/useTargetNetwork";
 import { TransactionWithFunction } from "~~/utils/scaffold-eth";
-import { TransactionsTableProps } from "~~/utils/scaffold-eth/";
+import { TransactionsTableProps } from "~~/utils/scaffold-eth";
 
 export const TransactionsTable = ({ blocks, transactionReceipts }: TransactionsTableProps) => {
   const { targetNetwork } = useTargetNetwork();
@@ -35,27 +35,38 @@ export const TransactionsTable = ({ blocks, transactionReceipts }: TransactionsT
                     <td className="w-1/12 md:py-4">
                       <TransactionHash hash={tx.hash} />
                     </td>
+
                     <td className="w-2/12 md:py-4">
                       {tx.functionName === "0x" ? "" : <span className="mr-1">{tx.functionName}</span>}
                       {functionCalled !== "0x" && (
                         <span className="badge badge-primary font-bold text-xs">{functionCalled}</span>
                       )}
                     </td>
+
                     <td className="w-1/12 md:py-4">{block.number?.toString()}</td>
-                    <td className="w-2/1 md:py-4">{timeMined}</td>
+                    <td className="w-2/12 md:py-4">{timeMined}</td>
+
                     <td className="w-2/12 md:py-4">
-                      <Address address={tx.from} size="sm" />
+                      <div className="text-xs">
+                        <Address address={tx.from as `0x${string}`} />
+                      </div>
                     </td>
+
                     <td className="w-2/12 md:py-4">
                       {!receipt?.contractAddress ? (
-                        tx.to && <Address address={tx.to} size="sm" />
+                        tx.to && (
+                          <div className="text-xs">
+                            <Address address={tx.to as `0x${string}`} />
+                          </div>
+                        )
                       ) : (
-                        <div className="relative">
-                          <Address address={receipt.contractAddress} size="sm" />
+                        <div className="relative text-xs">
+                          <Address address={receipt.contractAddress as `0x${string}`} />
                           <small className="absolute top-4 left-4">(Contract Creation)</small>
                         </div>
                       )}
                     </td>
+
                     <td className="text-right md:py-4">
                       {formatEther(tx.value)} {targetNetwork.nativeCurrency.symbol}
                     </td>

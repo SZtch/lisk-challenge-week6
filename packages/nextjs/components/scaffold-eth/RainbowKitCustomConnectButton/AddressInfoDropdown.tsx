@@ -1,6 +1,8 @@
+"use client";
+
 import { useRef, useState } from "react";
 import { NetworkOptions } from "./NetworkOptions";
-import CopyToClipboard from "react-copy-to-clipboard";
+import { AddressQRCodeModal } from "./AddressQRCodeModal";
 import { getAddress } from "viem";
 import { Address, useDisconnect } from "wagmi";
 import {
@@ -20,7 +22,7 @@ const allowedNetworks = getTargetNetworks();
 
 type AddressInfoDropdownProps = {
   address: Address;
-  blockExplorerAddressLink: string | undefined;
+  blockExplorerAddressLink?: string;
   displayName: string;
   ensAvatar?: string;
 };
@@ -35,14 +37,26 @@ export const AddressInfoDropdown = ({
   const checkSumAddress = getAddress(address);
 
   const [addressCopied, setAddressCopied] = useState(false);
-
   const [selectingNetwork, setSelectingNetwork] = useState(false);
+
   const dropdownRef = useRef<HTMLDetailsElement>(null);
   const closeDropdown = () => {
     setSelectingNetwork(false);
     dropdownRef.current?.removeAttribute("open");
   };
   useOutsideClick(dropdownRef, closeDropdown);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(String(checkSumAddress));
+      setAddressCopied(true);
+      setTimeout(() => setAddressCopied(false), 800);
+    } catch (e) {
+      console.error("Copy failed", e);
+    }
+  };
+
+  const modalId = `qrcode-${checkSumAddress.slice(2, 10)}`;
 
   return (
     <>
@@ -52,76 +66,77 @@ export const AddressInfoDropdown = ({
             <BlockieAvatar address={checkSumAddress} size={30} ensImage={ensAvatar} />
           </div>
           <span className="ml-2 mr-1">
-            {isENS(displayName) ? displayName : checkSumAddress?.slice(0, 6) + "..." + checkSumAddress?.slice(-4)}
+            {isENS(displayName) ? displayName : checkSumAddress.slice(0, 6) + "..." + checkSumAddress.slice(-4)}
           </span>
           <ChevronDownIcon className="h-6 w-4 ml-2 sm:ml-0" />
         </summary>
+
         <ul
           tabIndex={0}
           className="dropdown-content menu z-[2] p-2 mt-2 bg-base-200 rounded-box gap-1 border border-[#252442]"
         >
           <NetworkOptions hidden={!selectingNetwork} />
+
+          {/* Copy Address */}
           <li className={selectingNetwork ? "hidden" : ""}>
             {addressCopied ? (
               <div className="btn-sm !rounded-xl flex gap-3 py-3">
-                <CheckCircleIcon
+                <CheckCircleIcon className="text-xl font-normal h-6 w-4 cursor-pointer ml-2 sm:ml-0" aria-hidden="true" />
+                <span className="whitespace-nowrap">Copied!</span>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={handleCopy}
+                aria-label="Copy address"
+                className="btn-sm !rounded-xl flex gap-3 py-3"
+              >
+                <DocumentDuplicateIcon
                   className="text-xl font-normal h-6 w-4 cursor-pointer ml-2 sm:ml-0"
                   aria-hidden="true"
                 />
-                <span className=" whitespace-nowrap">Copy address</span>
-              </div>
-            ) : (
-              <CopyToClipboard
-                text={checkSumAddress}
-                onCopy={() => {
-                  setAddressCopied(true);
-                  setTimeout(() => {
-                    setAddressCopied(false);
-                  }, 800);
-                }}
-              >
-                <div className="btn-sm !rounded-xl flex gap-3 py-3">
-                  <DocumentDuplicateIcon
-                    className="text-xl font-normal h-6 w-4 cursor-pointer ml-2 sm:ml-0"
-                    aria-hidden="true"
-                  />
-                  <span className=" whitespace-nowrap">Copy address</span>
-                </div>
-              </CopyToClipboard>
+                <span className="whitespace-nowrap">Copy address</span>
+              </button>
             )}
           </li>
+
+          {/* QR Code */}
           <li className={selectingNetwork ? "hidden" : ""}>
-            <label htmlFor="qrcode-modal" className="btn-sm !rounded-xl flex gap-3 py-3">
+            <label htmlFor={modalId} className="btn-sm !rounded-xl flex gap-3 py-3">
               <QrCodeIcon className="h-6 w-4 ml-2 sm:ml-0" />
               <span className="whitespace-nowrap">View QR Code</span>
             </label>
           </li>
-          <li className={selectingNetwork ? "hidden" : ""}>
-            <button className="menu-item btn-sm !rounded-xl flex gap-3 py-3" type="button">
-              <ArrowTopRightOnSquareIcon className="h-6 w-4 ml-2 sm:ml-0" />
+
+          {/* Block Explorer */}
+          {blockExplorerAddressLink && (
+            <li className={selectingNetwork ? "hidden" : ""}>
               <a
+                className="menu-item btn-sm !rounded-xl flex gap-3 py-3"
                 target="_blank"
                 href={blockExplorerAddressLink}
                 rel="noopener noreferrer"
-                className="whitespace-nowrap"
               >
-                View on Block Explorer
+                <ArrowTopRightOnSquareIcon className="h-6 w-4 ml-2 sm:ml-0" />
+                <span className="whitespace-nowrap">View on Block Explorer</span>
               </a>
-            </button>
-          </li>
-          {allowedNetworks.length > 1 ? (
+            </li>
+          )}
+
+          {/* Switch Network */}
+          {allowedNetworks.length > 1 && (
             <li className={selectingNetwork ? "hidden" : ""}>
               <button
                 className="btn-sm !rounded-xl flex gap-3 py-3"
                 type="button"
-                onClick={() => {
-                  setSelectingNetwork(true);
-                }}
+                onClick={() => setSelectingNetwork(true)}
               >
                 <ArrowsRightLeftIcon className="h-6 w-4 ml-2 sm:ml-0" /> <span>Switch Network</span>
               </button>
             </li>
-          ) : null}
+          )}
+
+          {/* Disconnect */}
           <li className={selectingNetwork ? "hidden" : ""}>
             <button
               className="menu-item text-error btn-sm !rounded-xl flex gap-3 py-3"
@@ -133,6 +148,9 @@ export const AddressInfoDropdown = ({
           </li>
         </ul>
       </details>
+
+      {/* Modal QR di luar dropdown */}
+      <AddressQRCodeModal modalId={modalId} address={checkSumAddress} />
     </>
   );
 };

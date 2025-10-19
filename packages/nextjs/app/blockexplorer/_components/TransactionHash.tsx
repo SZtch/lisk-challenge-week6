@@ -2,37 +2,45 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { CopyToClipboard } from "react-copy-to-clipboard";
 import { CheckCircleIcon, DocumentDuplicateIcon } from "@heroicons/react/24/outline";
 
-export const TransactionHash = ({ hash }: { hash: string }) => {
-  const [addressCopied, setAddressCopied] = useState(false);
+type Props = { hash: string };
+
+export const TransactionHash = ({ hash }: Props) => {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(hash);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 800);
+    } catch (e) {
+      console.error("Copy failed", e);
+    }
+  };
+
+  const short = `${hash?.slice(0, 6)}...${hash?.slice(-4)}`;
 
   return (
     <div className="flex items-center">
-      <Link href={`/blockexplorer/transaction/${hash}`}>
-        {hash?.substring(0, 6)}...{hash?.substring(hash.length - 4)}
-      </Link>
-      {addressCopied ? (
+      <Link href={`/blockexplorer/transaction/${hash}`}>{short}</Link>
+      {copied ? (
         <CheckCircleIcon
-          className="ml-1.5 text-xl font-normal text-sky-600 h-5 w-5 cursor-pointer"
+          className="ml-1.5 text-xl font-normal text-sky-600 h-5 w-5"
           aria-hidden="true"
         />
       ) : (
-        <CopyToClipboard
-          text={hash as string}
-          onCopy={() => {
-            setAddressCopied(true);
-            setTimeout(() => {
-              setAddressCopied(false);
-            }, 800);
-          }}
+        <button
+          type="button"
+          onClick={handleCopy}
+          aria-label="Copy transaction hash"
+          className="ml-1.5"
         >
           <DocumentDuplicateIcon
-            className="ml-1.5 text-xl font-normal text-sky-600 h-5 w-5 cursor-pointer"
+            className="text-xl font-normal text-sky-600 h-5 w-5"
             aria-hidden="true"
           />
-        </CopyToClipboard>
+        </button>
       )}
     </div>
   );
