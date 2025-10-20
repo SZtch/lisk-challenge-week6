@@ -26,7 +26,7 @@ const scaffoldConfig = {
   alchemyApiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY || "",
 
   // WalletConnect Project ID (WAJIB diisi untuk koneksi wallet)
-  walletConnectProjectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || "",
+  walletConnectProjectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || "cef802b864a9649470f357a984356f1a",
 
   // Kalau true → hanya aktif burner wallet di local hardhat
   onlyLocalBurnerWallet: false,
