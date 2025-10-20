@@ -21,16 +21,10 @@ type HeaderMenuLink = {
 };
 
 export const menuLinks: HeaderMenuLink[] = [
-  {
-    label: "Home",
-    href: "/",
-    icon: <HomeIcon className="h-4 w-4" />,
-  },
-  {
-    label: "Debug Contracts",
-    href: "/debug",
-    icon: <BugAntIcon className="h-4 w-4" />,
-  },
+  { label: "Home", href: "/", icon: <HomeIcon className="h-4 w-4" /> },
+  { label: "Events", href: "/events" }, // ⟵ NEW
+  { label: "Debug Contracts", href: "/debug", icon: <BugAntIcon className="h-4 w-4" /> },
+  { label: "Block Explorer", href: "/blockexplorer" }, // ⟵ OPTIONAL (nice to have)
 ];
 
 export const HeaderMenuLinks = () => {
@@ -39,15 +33,15 @@ export const HeaderMenuLinks = () => {
   return (
     <>
       {menuLinks.map(({ label, href, icon }) => {
-        const isActive = pathname === href;
+        const isActive = pathname === href || (href !== "/" && pathname?.startsWith(href));
         return (
           <li key={href}>
             <Link
               href={href}
               passHref
               className={cn(
-                "relative flex items-center justify-between px-4 py-2 text-sm transition-colors duration-200",
-                isActive ? "bg-base-100 primary-content" : "text-slate-400",
+                "relative flex items-center justify-between gap-2 px-4 py-2 text-sm transition-colors duration-200 rounded-lg",
+                isActive ? "bg-base-100 text-primary-content" : "text-slate-400 hover:text-slate-200",
               )}
             >
               {icon}
@@ -78,9 +72,7 @@ export const Header = () => {
           <label
             tabIndex={0}
             className={`ml-1 btn btn-ghost ${isDrawerOpen ? "hover:bg-secondary" : "hover:bg-transparent"}`}
-            onClick={() => {
-              setIsDrawerOpen(prevIsOpenState => !prevIsOpenState);
-            }}
+            onClick={() => setIsDrawerOpen(prev => !prev)}
           >
             <Bars3Icon className="h-1/2" />
           </label>
@@ -88,14 +80,13 @@ export const Header = () => {
             <ul
               tabIndex={0}
               className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
-              onClick={() => {
-                setIsDrawerOpen(false);
-              }}
+              onClick={() => setIsDrawerOpen(false)}
             >
               <HeaderMenuLinks />
             </ul>
           )}
         </div>
+
         <Link href="/" passHref className="hidden lg:flex items-center gap-2 ml-4 mr-6 shrink-0">
           <div className="flex relative">
             <Logo size={24} />
@@ -105,10 +96,12 @@ export const Header = () => {
             <span className="text-xs">Ethereum dev stack</span>
           </div>
         </Link>
+
         <ul className="hidden lg:flex lg:flex-nowrap menu menu-horizontal px-1 gap-2">
           <HeaderMenuLinks />
         </ul>
       </div>
+
       <div className="navbar-end flex-grow mr-4">
         <RainbowKitCustomConnectButton />
         <FaucetButton />
