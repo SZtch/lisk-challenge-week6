@@ -76,13 +76,3 @@ packages/nextjs/
 🔗 **GitHub Repository:**
 [https://github.com/SZtch/lisk-challenge-week3](https://github.com/SZtch/lisk-challenge-week3)
 
----
-
-### 📚 What I Learned
-
-* How to fetch and render blockchain **event logs**
-* How to handle **RPC limits** safely (windowed block range)
-* Real-time event updates using `watch: true`
-* Clean React component composition with **Next.js App Router**
-mau gue tambahin **preview image (screenshot dApp)** di bagian atas README juga biar tampil keren di GitHub?
-```
