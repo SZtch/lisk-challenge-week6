@@ -1,32 +1,16 @@
-import type { Address } from "viem";
-import type { ChainWithAttributes } from "./types";
+// packages/nextjs/utils/scaffold-eth/getBlockExplorerTxLinks.ts
+import type { ChainWithAttributes } from "./networks";
 
-/** Link ke halaman alamat pada block explorer jaringan target */
-export function getBlockExplorerAddressLink(
-  targetNetwork: ChainWithAttributes,
-  address: Address,
-): string {
+// ← PENTING: ambil dari networks, bukan dari ./types
+
+export const getBlockExplorerTxLink = (chain: ChainWithAttributes, txHash: `0x${string}`): string | undefined => {
   const base =
-    targetNetwork.blockExplorers?.default?.url ??
-    (targetNetwork.rpcUrls?.default?.http?.[0]
-      ? targetNetwork.rpcUrls.default.http[0].replace(/\/v\d+.*$/, "")
-      : "");
+    chain.blockExplorers?.default?.url ??
+    // fallback lama (kalau kamu set sendiri di extra data)
+    // @ts-expect-error: optional legacy field
+    chain.blockExplorerUrl ??
+    "";
 
-  // Contoh Blockscout: https://sepolia-blockscout.lisk.com/address/0xabc...
-  return `${base.replace(/\/$/, "")}/address/${address}`;
-}
-
-/** Link ke halaman transaksi pada block explorer jaringan target */
-export function getBlockExplorerTxLink(
-  targetNetwork: ChainWithAttributes,
-  txHash: string,
-): string {
-  const base =
-    targetNetwork.blockExplorers?.default?.url ??
-    (targetNetwork.rpcUrls?.default?.http?.[0]
-      ? targetNetwork.rpcUrls.default.http[0].replace(/\/v\d+.*$/, "")
-      : "");
-
-  // Contoh Blockscout: https://sepolia-blockscout.lisk.com/tx/0xhash
-  return `${base.replace(/\/$/, "")}/tx/${txHash}`;
-}
+  if (!base) return undefined;
+  return `${base.replace(/\/+$/, "")}/tx/${txHash}`;
+};

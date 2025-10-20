@@ -18,9 +18,9 @@ type GlobalState = {
 
 // fallback aman kalau array kosong (hindari undefined)
 const FALLBACK_CHAIN = (scaffoldConfig.targetNetworks &&
-  scaffoldConfig.targetNetworks[0]) as ChainWithAttributes;
+  scaffoldConfig.targetNetworks[0]) as unknown as ChainWithAttributes;
 
-export const useGlobalState = create<GlobalState>((set) => ({
+export const useGlobalState = create<GlobalState>(set => ({
   nativeCurrencyPrice: 0,
   setNativeCurrencyPrice: (price: number) => set({ nativeCurrencyPrice: price }),
 

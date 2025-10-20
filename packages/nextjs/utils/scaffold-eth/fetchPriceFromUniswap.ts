@@ -17,20 +17,20 @@ const ABI = parseAbi([
 ]);
 
 export const fetchPriceFromUniswap = async (targetNetwork: ChainWithAttributes): Promise<number> => {
+  const hasNativeTokenAddr =
+    "nativeCurrencyTokenAddress" in targetNetwork && Boolean((targetNetwork as any).nativeCurrencyTokenAddress);
   if (
     targetNetwork.nativeCurrency.symbol !== "ETH" &&
     targetNetwork.nativeCurrency.symbol !== "SEP" &&
-    !targetNetwork.nativeCurrencyTokenAddress
+    !hasNativeTokenAddr
   ) {
     return 0;
   }
   try {
     const DAI = new Token(1, "0x6B175474E89094C44Da98b954EedeAC495271d0F", 18);
-    const TOKEN = new Token(
-      1,
-      targetNetwork.nativeCurrencyTokenAddress || "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
-      18,
-    );
+    const tokenAddress =
+      (targetNetwork as any).nativeCurrencyTokenAddress || "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
+    const TOKEN = new Token(1, tokenAddress, 18);
     const pairAddress = Pair.getAddress(TOKEN, DAI) as Address;
 
     const wagmiConfig = {

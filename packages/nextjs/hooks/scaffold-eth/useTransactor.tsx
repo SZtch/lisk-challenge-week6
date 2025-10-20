@@ -49,9 +49,15 @@ export const useTransactor = (_walletClient?: WalletClient): TransactionFunc => 
     let notificationId = null;
     let transactionHash: Awaited<WriteContractResult>["hash"] | undefined = undefined;
     try {
-      const network = await walletClient.getChainId();
-      // Get full transaction from public client
+      // Get full transaction from public client and chain info
       const publicClient = getPublicClient();
+      const network = await walletClient.getChainId();
+      // prefer using publicClient.chain (ChainWithAttributes) for block explorer links when available
+      const chainForExplorer = publicClient?.chain
+        ? publicClient.chain
+        : network
+        ? ({ id: network } as any)
+        : undefined;
 
       notificationId = notification.loading(<TxnNotification message="Awaiting for user confirmation" />);
       if (typeof tx === "function") {
@@ -69,7 +75,7 @@ export const useTransactor = (_walletClient?: WalletClient): TransactionFunc => 
       }
       notification.remove(notificationId);
 
-      const blockExplorerTxURL = network ? getBlockExplorerTxLink(network, transactionHash) : "";
+      const blockExplorerTxURL = chainForExplorer ? getBlockExplorerTxLink(chainForExplorer, transactionHash) : "";
 
       notificationId = notification.loading(
         <TxnNotification message="Waiting for transaction to complete." blockExplorerLink={blockExplorerTxURL} />,

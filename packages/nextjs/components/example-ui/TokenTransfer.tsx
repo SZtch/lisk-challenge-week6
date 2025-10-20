@@ -4,13 +4,13 @@ import { useState } from "react";
 import { parseEther } from "viem";
 import { useAccount, usePublicClient } from "wagmi";
 import { useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
-import { notification } from "~~/utils/scaffold-eth";
 import { useTxHistory } from "~~/services/store/txHistory";
+import { notification } from "~~/utils/scaffold-eth";
 
 export const TokenTransfer = () => {
   const { address: connectedAddress } = useAccount();
   const publicClient = usePublicClient();
-  const addTx = useTxHistory((s) => s.add);
+  const addTx = useTxHistory(s => s.add);
 
   const [recipient, setRecipient] = useState("");
   const [amount, setAmount] = useState("");
@@ -18,6 +18,7 @@ export const TokenTransfer = () => {
   const { writeAsync: writeMyTokenAsync } = useScaffoldContractWrite({
     contractName: "MyToken",
     functionName: "transfer",
+    args: [undefined, undefined] as const,
   });
 
   const handleTransfer = async () => {

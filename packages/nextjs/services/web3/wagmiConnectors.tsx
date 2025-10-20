@@ -8,6 +8,7 @@ import {
   safeWallet,
   walletConnectWallet,
 } from "@rainbow-me/rainbowkit/wallets";
+import type { Chain } from "viem";
 import * as chains from "viem/chains";
 import { configureChains } from "wagmi";
 import { alchemyProvider } from "wagmi/providers/alchemy";
@@ -20,9 +21,9 @@ const targetNetworks = getTargetNetworks();
 const { onlyLocalBurnerWallet } = scaffoldConfig;
 
 // We always want to have mainnet enabled (ENS resolution, ETH price, etc). But only once.
-const enabledChains = targetNetworks.find(network => network.id === 1)
+const enabledChains: Chain[] = (targetNetworks.find(network => network.id === 1)
   ? targetNetworks
-  : [...targetNetworks, chains.mainnet];
+  : [...targetNetworks, chains.mainnet]) as unknown as Chain[];
 
 /**
  * Chains for the app

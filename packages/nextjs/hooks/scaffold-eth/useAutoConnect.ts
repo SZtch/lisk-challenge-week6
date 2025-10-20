@@ -19,7 +19,7 @@ const SAFE_ID = "safe";
  * @returns
  */
 const getInitialConnector = (
-  initialNetwork: Chain,
+  initialNetwork: Chain | ReturnType<typeof getTargetNetworks>[number],
   previousWalletId: string,
   connectors: Connector[],
 ): { connector: Connector | undefined; chainId?: number } | undefined => {

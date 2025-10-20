@@ -4,13 +4,13 @@ import { useState } from "react";
 import { useAccount, usePublicClient } from "wagmi";
 import { Address } from "~~/components/scaffold-eth";
 import { useScaffoldContractRead, useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
-import { notification } from "~~/utils/scaffold-eth";
 import { useTxHistory } from "~~/services/store/txHistory";
+import { notification } from "~~/utils/scaffold-eth";
 
 export const NFTCollection = () => {
   const { address: connectedAddress } = useAccount();
   const publicClient = usePublicClient();
-  const addTx = useTxHistory((s) => s.add);
+  const addTx = useTxHistory(s => s.add);
 
   const [mintToAddress, setMintToAddress] = useState("");
 
@@ -26,6 +26,7 @@ export const NFTCollection = () => {
   const { writeAsync: writeMyNFTAsync } = useScaffoldContractWrite({
     contractName: "MyNFT",
     functionName: "mint",
+    args: [undefined] as const,
   });
 
   const handleMint = async () => {
