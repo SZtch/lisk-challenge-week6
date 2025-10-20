@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useTxHistory } from "~~/services/store/txHistory";
 import { useTargetNetwork } from "~~/hooks/scaffold-eth/useTargetNetwork";
+import { useTxHistory } from "~~/services/store/txHistory";
 import { getBlockExplorerTxLink } from "~~/utils/scaffold-eth";
 
 export const TxHistory = () => {
@@ -35,18 +35,11 @@ export const TxHistory = () => {
         </div>
         <ul className="divide-y divide-base-300 mt-2">
           {items.map(item => (
-            <li
-              key={item.hash}
-              className="py-3 flex items-center justify-between"
-            >
+            <li key={item.hash} className="py-3 flex items-center justify-between">
               <div className="flex-1">
                 <div className="font-medium">{item.label}</div>
-                <div className="text-xs opacity-70">
-                  {new Date(item.timestamp).toLocaleString()}
-                </div>
-                <div className="text-xs truncate opacity-70">
-                  {item.hash}
-                </div>
+                <div className="text-xs opacity-70">{new Date(item.timestamp).toLocaleString()}</div>
+                <div className="text-xs truncate opacity-70">{item.hash}</div>
               </div>
               <a
                 href={item.explorerUrl ?? getBlockExplorerTxLink(targetNetwork, item.hash)}

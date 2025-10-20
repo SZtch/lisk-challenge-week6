@@ -2,15 +2,15 @@
 
 import { useEffect } from "react";
 import { useNetwork } from "wagmi";
-import type { ChainWithAttributes } from "~~/utils/scaffold-eth";
 import { useGlobalState } from "~~/services/store/store";
+import type { ChainWithAttributes } from "~~/utils/scaffold-eth";
 
 export function useTargetNetwork(): { targetNetwork: ChainWithAttributes } {
   const { chain } = useNetwork();
 
   // ambil dari Zustand sebagai HOOK (function)
-  const targetNetwork = useGlobalState((s) => s.targetNetwork);
-  const setTargetNetwork = useGlobalState((s) => s.setTargetNetwork);
+  const targetNetwork = useGlobalState(s => s.targetNetwork);
+  const setTargetNetwork = useGlobalState(s => s.setTargetNetwork);
 
   useEffect(() => {
     if (chain && chain.id !== targetNetwork.id) {

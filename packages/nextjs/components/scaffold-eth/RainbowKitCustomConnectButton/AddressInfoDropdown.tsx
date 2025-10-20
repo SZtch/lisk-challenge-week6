@@ -1,8 +1,8 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { NetworkOptions } from "./NetworkOptions";
 import { AddressQRCodeModal } from "./AddressQRCodeModal";
+import { NetworkOptions } from "./NetworkOptions";
 import { getAddress } from "viem";
 import { Address, useDisconnect } from "wagmi";
 import {
@@ -81,7 +81,10 @@ export const AddressInfoDropdown = ({
           <li className={selectingNetwork ? "hidden" : ""}>
             {addressCopied ? (
               <div className="btn-sm !rounded-xl flex gap-3 py-3">
-                <CheckCircleIcon className="text-xl font-normal h-6 w-4 cursor-pointer ml-2 sm:ml-0" aria-hidden="true" />
+                <CheckCircleIcon
+                  className="text-xl font-normal h-6 w-4 cursor-pointer ml-2 sm:ml-0"
+                  aria-hidden="true"
+                />
                 <span className="whitespace-nowrap">Copied!</span>
               </div>
             ) : (

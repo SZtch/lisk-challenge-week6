@@ -1,8 +1,8 @@
 "use client";
 
+import { useMemo } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { Address as ViemAddress } from "viem";
-import { useMemo } from "react";
 
 type AddressQRCodeModalProps = {
   address: ViemAddress | string;
@@ -21,19 +21,14 @@ export const AddressQRCodeModal = ({ address, modalId }: AddressQRCodeModalProps
       <label htmlFor={modalId} className="modal cursor-pointer">
         <label className="modal-box relative bg-base-200 border border-base-300">
           {/* Tombol close */}
-          <label
-            htmlFor={modalId}
-            className="btn btn-sm btn-circle absolute right-3 top-3"
-          >
+          <label htmlFor={modalId} className="btn btn-sm btn-circle absolute right-3 top-3">
             ✕
           </label>
 
           {/* Konten QR Code */}
           <div className="flex flex-col items-center justify-center gap-5 py-6">
             <QRCodeSVG value={qrValue} size={220} />
-            <p className="text-sm text-center text-base-content/80 break-all">
-              {address}
-            </p>
+            <p className="text-sm text-center text-base-content/80 break-all">{address}</p>
           </div>
         </label>
       </label>

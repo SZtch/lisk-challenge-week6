@@ -4,11 +4,9 @@ import { Balance } from "../Balance";
 import { AddressInfoDropdown } from "./AddressInfoDropdown";
 import { AddressQRCodeModal } from "./AddressQRCodeModal";
 import { WrongNetworkDropdown } from "./WrongNetworkDropdown";
-
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { Address as ViemAddress } from "viem";
 import { useAccount, useNetwork } from "wagmi";
-
 import { useAutoConnect, useNetworkColor } from "~~/hooks/scaffold-eth";
 import { useTargetNetwork } from "~~/hooks/scaffold-eth/useTargetNetwork";
 import { getBlockExplorerAddressLink } from "~~/utils/scaffold-eth";
@@ -30,11 +28,7 @@ export const RainbowKitCustomConnectButton = () => {
   // Belum connect → tombol connect
   if (!isConnected || !address || !chain) {
     return (
-      <button
-        className="btn btn-secondary btn-sm"
-        type="button"
-        onClick={() => openConnectModal?.()}
-      >
+      <button className="btn btn-secondary btn-sm" type="button" onClick={() => openConnectModal?.()}>
         Connect Wallet
       </button>
     );

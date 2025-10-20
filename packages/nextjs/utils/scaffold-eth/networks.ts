@@ -9,10 +9,7 @@ export type ChainWithAttributes = {
 };
 
 // Tambahan info per chain yang Anda pakai
-export const NETWORKS_EXTRA_DATA: Record<
-  number,
-  { blockExplorer?: string }
-> = {
+export const NETWORKS_EXTRA_DATA: Record<number, { blockExplorer?: string }> = {
   // Lisk Sepolia = 4202
   4202: {
     blockExplorer: "https://sepolia-blockscout.lisk.com",
