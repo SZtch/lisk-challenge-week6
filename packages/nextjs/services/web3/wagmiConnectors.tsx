@@ -1,3 +1,4 @@
+// packages/nextjs/services/web3/wagmiConnectors.ts
 import { connectorsForWallets } from "@rainbow-me/rainbowkit";
 import {
   braveWallet,
@@ -20,43 +21,35 @@ import { getTargetNetworks } from "~~/utils/scaffold-eth";
 const targetNetworks = getTargetNetworks();
 const { onlyLocalBurnerWallet } = scaffoldConfig;
 
-// We always want to have mainnet enabled (ENS resolution, ETH price, etc). But only once.
-const enabledChains: Chain[] = (targetNetworks.find(network => network.id === 1)
+// Selalu include mainnet sekali (untuk ENS/price), kalau belum ada
+const enabledChains: Chain[] = (targetNetworks.find(n => n.id === 1)
   ? targetNetworks
   : [...targetNetworks, chains.mainnet]) as unknown as Chain[];
 
-/**
- * Chains for the app
- */
 export const appChains = configureChains(
   enabledChains,
-  [
-    alchemyProvider({
-      apiKey: scaffoldConfig.alchemyApiKey,
-    }),
-    publicProvider(),
-  ],
+  [alchemyProvider({ apiKey: scaffoldConfig.alchemyApiKey }), publicProvider()],
   {
-    // We might not need this checkout https://github.com/scaffold-eth/scaffold-eth-2/pull/45#discussion_r1024496359, will test and remove this before merging
     stallTimeout: 3_000,
-    // Sets pollingInterval if using chains other than local hardhat chain
-    ...(targetNetworks.find(network => network.id !== chains.hardhat.id)
-      ? {
-          pollingInterval: scaffoldConfig.pollingInterval,
-        }
+    ...(targetNetworks.find(n => n.id !== chains.hardhat.id)
+      ? { pollingInterval: scaffoldConfig.pollingInterval }
       : {}),
   },
 );
 
-const walletsOptions = { chains: appChains.chains, projectId: scaffoldConfig.walletConnectProjectId };
-const wallets = [
+// === Perbaikan utama: hanya hidupkan WalletConnect kalau projectId ada ===
+const wcProjectId = (scaffoldConfig.walletConnectProjectId || "").trim();
+const hasWC = wcProjectId.length > 0;
+
+const walletsOptions = { chains: appChains.chains, projectId: wcProjectId };
+
+const baseWallets = [
   metaMaskWallet({ ...walletsOptions, shimDisconnect: true }),
-  walletConnectWallet(walletsOptions),
   ledgerWallet(walletsOptions),
   braveWallet(walletsOptions),
   coinbaseWallet({ ...walletsOptions, appName: "scaffold-eth-2" }),
   rainbowWallet(walletsOptions),
-  ...(!targetNetworks.some(network => network.id !== chains.hardhat.id) || !onlyLocalBurnerWallet
+  ...(!targetNetworks.some(n => n.id !== chains.hardhat.id) || !onlyLocalBurnerWallet
     ? [
         burnerWalletConfig({
           chains: appChains.chains.filter(chain => targetNetworks.map(({ id }) => id).includes(chain.id)),
@@ -66,9 +59,9 @@ const wallets = [
   safeWallet({ ...walletsOptions }),
 ];
 
-/**
- * wagmi connectors for the wagmi context
- */
+// sisipkan walletConnectWallet hanya jika hasWC = true
+const wallets = hasWC ? [baseWallets[0], walletConnectWallet(walletsOptions), ...baseWallets.slice(1)] : baseWallets;
+
 export const wagmiConnectors = connectorsForWallets([
   {
     groupName: "Supported Wallets",
