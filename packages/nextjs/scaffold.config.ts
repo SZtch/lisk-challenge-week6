@@ -11,12 +11,27 @@ export type ScaffoldConfig = {
   walletAutoConnect: boolean;
 };
 
+/**
+ * Konfigurasi utama untuk scaffold-eth Next.js app
+ * Pastikan semua ENV variable sudah diisi di .env.local / Vercel
+ */
 const scaffoldConfig = {
-  targetNetworks: [liskSepolia], // <- PENTING: pakai dari ./chains
-  pollingInterval: 30000,
+  // Target chain utama (bisa tambah chain lain jika perlu)
+  targetNetworks: [liskSepolia],
+
+  // Interval polling untuk wagmi (ms)
+  pollingInterval: 30_000,
+
+  // Alchemy key (opsional untuk RPC fallback)
   alchemyApiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY || "",
-  walletConnectProjectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || "",
-  onlyLocalBurnerWallet: false, // disarankan false untuk produksi
+
+  // WalletConnect Project ID (WAJIB diisi untuk koneksi wallet)
+  walletConnectProjectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || "",
+
+  // Kalau true → hanya aktif burner wallet di local hardhat
+  onlyLocalBurnerWallet: false,
+
+  // Auto connect wallet ketika user reload
   walletAutoConnect: true,
 } as const satisfies ScaffoldConfig;
 
