@@ -4,7 +4,7 @@ import React, { useCallback, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Logo } from "./Logo";
-import { Bars3Icon, BugAntIcon, HomeIcon } from "@heroicons/react/24/outline";
+import { Bars3Icon, CurrencyDollarIcon, HomeIcon, SparklesIcon } from "@heroicons/react/24/outline";
 import {
   DappConsoleButton,
   FaucetButton,
@@ -22,9 +22,10 @@ type HeaderMenuLink = {
 
 export const menuLinks: HeaderMenuLink[] = [
   { label: "Home", href: "/", icon: <HomeIcon className="h-4 w-4" /> },
-  { label: "Events", href: "/events" }, // ⟵ NEW
-  { label: "Debug Contracts", href: "/debug", icon: <BugAntIcon className="h-4 w-4" /> },
-  { label: "Block Explorer", href: "/blockexplorer" }, // ⟵ OPTIONAL (nice to have)
+  { label: "Events", href: "/events" },
+  { label: "Oracle", href: "/oracle", icon: <CurrencyDollarIcon className="h-4 w-4" /> },
+  { label: "Gasless", href: "/gasless", icon: <SparklesIcon className="h-4 w-4" /> },
+  { label: "Block Explorer", href: "/blockexplorer" },
 ];
 
 export const HeaderMenuLinks = () => {
@@ -54,9 +55,6 @@ export const HeaderMenuLinks = () => {
   );
 };
 
-/**
- * Site header
- */
 export const Header = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const burgerMenuRef = useRef<HTMLDivElement>(null);

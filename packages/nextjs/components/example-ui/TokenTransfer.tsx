@@ -29,7 +29,7 @@ export const TokenTransfer = () => {
 
     try {
       const tx: any = await writeMyTokenAsync({
-        args: [recipient, parseEther(amount)],
+        args: [recipient as `0x${string}`, parseEther(amount)],
       });
 
       // Ambil hash dari hasil wagmi (string atau object)

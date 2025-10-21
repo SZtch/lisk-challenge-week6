@@ -1,11 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { isAddress } from "viem";
 import { useAccount, usePublicClient } from "wagmi";
 import { Address } from "~~/components/scaffold-eth";
 import { useScaffoldContractRead, useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
 import { useTxHistory } from "~~/services/store/txHistory";
 import { notification } from "~~/utils/scaffold-eth";
+
+type HexAddress = `0x${string}`;
 
 export const NFTCollection = () => {
   const { address: connectedAddress } = useAccount();
@@ -17,29 +20,46 @@ export const NFTCollection = () => {
   const { data: nftName } = useScaffoldContractRead({ contractName: "MyNFT", functionName: "name" });
   const { data: nftSymbol } = useScaffoldContractRead({ contractName: "MyNFT", functionName: "symbol" });
   const { data: totalSupply } = useScaffoldContractRead({ contractName: "MyNFT", functionName: "totalSupply" });
+
+  // ✅ fix tipe argumen: cast ke `0x${string}` | undefined
   const { data: userBalance } = useScaffoldContractRead({
     contractName: "MyNFT",
     functionName: "balanceOf",
-    args: [connectedAddress],
+    args: [connectedAddress as HexAddress | undefined],
   });
 
   const { writeAsync: writeMyNFTAsync } = useScaffoldContractWrite({
     contractName: "MyNFT",
     functionName: "mint",
+    // argumen akan diisi saat dipanggil; definisi awal boleh kosong
     args: [undefined] as const,
   });
 
   const handleMint = async () => {
-    const targetAddress = mintToAddress || connectedAddress;
+    const self = connectedAddress as HexAddress | undefined;
+    let target: HexAddress | undefined;
 
-    if (!targetAddress) {
+    // kalau input diisi, validasi dulu
+    const input = mintToAddress.trim();
+    if (input) {
+      if (!isAddress(input)) {
+        notification.error("Invalid address format");
+        return;
+      }
+      target = input as HexAddress;
+    } else {
+      // fallback ke wallet sendiri
+      target = self;
+    }
+
+    if (!target) {
       notification.error("Please connect wallet or specify address");
       return;
     }
 
     try {
-      const tx: any = await writeMyNFTAsync({ args: [targetAddress] });
-      const hash = (typeof tx === "string" ? tx : tx?.hash) as `0x${string}`;
+      const tx: any = await writeMyNFTAsync({ args: [target] });
+      const hash = (typeof tx === "string" ? tx : tx?.hash) as `0x${string}` | undefined;
 
       if (hash) {
         await publicClient?.waitForTransactionReceipt({ hash });

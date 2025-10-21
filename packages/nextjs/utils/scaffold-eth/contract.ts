@@ -24,6 +24,7 @@ import deployedContractsData from "~~/contracts/deployedContracts";
 import externalContractsData from "~~/contracts/externalContracts";
 import scaffoldConfig from "~~/scaffold.config";
 
+/** -------- merge + tandai external -------- */
 type AddExternalFlag<T> = {
   [ChainId in keyof T]: {
     [ContractName in keyof T[ChainId]]: T[ChainId][ContractName] & { external?: true };
@@ -54,6 +55,7 @@ const deepMergeContracts = <L extends Record<PropertyKey, any>, E extends Record
 
 const contractsData = deepMergeContracts(deployedContractsData, externalContractsData);
 
+/** -------- tipe generik -------- */
 export type InheritedFunctions = { readonly [key: string]: string };
 
 export type GenericContract = {
@@ -69,24 +71,36 @@ export type GenericContractsDeclaration = {
   };
 };
 
+/** expose data (opsional) */
 export const contracts = contractsData as GenericContractsDeclaration | null;
 
+/** -------- util deteksi config chain -------- */
 type ConfiguredChainId = (typeof scaffoldConfig)["targetNetworks"][0]["id"];
 
-type IsContractDeclarationMissing<TYes, TNo> = typeof contractsData extends { [key in ConfiguredChainId]: any }
+/**
+ * Kalau `contractsData` tidak punya key utk `ConfiguredChainId` (yang biasanya literal, mis. 4202),
+ * maka fallback ke `GenericContractsDeclaration`.
+ */
+type IsContractDeclarationMissing<TYes, TNo> = typeof contractsData extends {
+  [key in Extract<ConfiguredChainId, keyof typeof contractsData>]: any;
+}
   ? TNo
   : TYes;
 
+/** -------- inti perbaikan indexing -------- */
 type ContractsDeclaration = IsContractDeclarationMissing<GenericContractsDeclaration, typeof contractsData>;
 
-type Contracts = ContractsDeclaration[ConfiguredChainId];
+/**
+ * Jangan index dengan `ConfiguredChainId` (tipe `number` umum).
+ * Ambil union dari semua chain yang ada pada hasil merge.
+ */
+type Contracts = ContractsDeclaration[keyof ContractsDeclaration];
 
 export type ContractName = keyof Contracts;
-
 export type Contract<TContractName extends ContractName> = Contracts[TContractName];
 
+/** -------- helper ABI -------- */
 type InferContractAbi<TContract> = TContract extends { abi: infer TAbi } ? TAbi : never;
-
 export type ContractAbi<TContractName extends ContractName = ContractName> = InferContractAbi<Contract<TContractName>>;
 
 export type AbiFunctionInputs<TAbi extends Abi, TFunctionName extends string> = ExtractAbiFunction<
@@ -115,6 +129,7 @@ export type AbiEventInputs<TAbi extends Abi, TEventName extends ExtractAbiEventN
   TEventName
 >["inputs"];
 
+/** -------- status kode kontrak -------- */
 export enum ContractCodeStatus {
   "LOADING",
   "DEPLOYED",
@@ -125,6 +140,7 @@ type AbiStateMutability = "pure" | "view" | "nonpayable" | "payable";
 export type ReadAbiStateMutability = "view" | "pure";
 export type WriteAbiStateMutability = "nonpayable" | "payable";
 
+/** -------- nama fungsi yg punya input -------- */
 export type FunctionNamesWithInputs<
   TContractName extends ContractName,
   TAbiStateMutibility extends AbiStateMutability = AbiStateMutability,
@@ -141,12 +157,12 @@ export type FunctionNamesWithInputs<
   }
 >["name"];
 
+/** -------- utils tipe -------- */
 type Expand<T> = T extends object ? (T extends infer O ? { [K in keyof O]: O[K] } : never) : T;
-
 type UnionToIntersection<U> = Expand<(U extends any ? (k: U) => void : never) extends (k: infer I) => void ? I : never>;
-
 type OptionalTupple<T> = T extends readonly [infer H, ...infer R] ? readonly [H | undefined, ...OptionalTupple<R>] : T;
 
+/** -------- hook configs -------- */
 type UseScaffoldArgsParam<
   TContractName extends ContractName,
   TFunctionName extends ExtractAbiFunctionNames<ContractAbi<TContractName>>,
