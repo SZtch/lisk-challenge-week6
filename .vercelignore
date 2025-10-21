@@ -1,0 +1,6 @@
+packages/hardhat
+packages/foundry
+node_modules
+.env
+.cache
+
