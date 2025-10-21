@@ -14,22 +14,6 @@ A dApp built for **@LiskSEA Speedrun Week 4**, integrating **RedStone Oracles** 
 
 Solidity · Hardhat · RedStone · Next.js · TailwindCSS · RainbowKit · Lisk Sepolia
 
-### 🔹 Commands
-
-```bash
-# install
-cd packages/nextjs && yarn install
-
-# run local
-yarn dev
-
-# deploy contracts
-cd ../hardhat && npx hardhat deploy --network lisk-sepolia
-
-# deploy frontend
-cd ../nextjs && vercel --prod
-```
-
 ### 🔹 Live App
 
 🔗 [https://lisk-challenge-week4.vercel.app](https://lisk-challenge-week4.vercel.app)
