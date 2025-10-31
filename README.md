@@ -9,6 +9,10 @@ A simple decentralized exchange (DEX) built on **Lisk Sepolia**, allowing users 
 **Frontend:**  
 👉 https://lisk-challenge-week6.vercel.app 
 
+## 🖼️ App Preview
+
+![Simple DEX Screenshot](./preview.png)
+
 ---
 
 ## 🔗 Contract Addresses (Lisk Sepolia)
