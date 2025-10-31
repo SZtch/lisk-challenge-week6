@@ -1,70 +1,81 @@
-# ⚡ SimpleDEX — Lisk Challenge Week 6
+# 💧 SimpleDEX — Lisk Challenge Week 6  
+**Author:** sztch  
 
-## 📘 Overview
-**SimpleDEX** is a lightweight decentralized exchange (DEX) built on **Lisk Sepolia Testnet** using **Hardhat + Next.js**.  
-It lets users provide liquidity, remove liquidity, and perform swaps between two ERC-20 tokens — **MyToken** and **SimpleUSDC** — with real-time pool statistics.
-
----
-
-## ⚙️ Core Features
-- 💧 **Add / Remove Liquidity** — supply or withdraw tokens to the pool  
-- 🔁 **Token Swap** — instantly swap between MyToken ↔ SimpleUSDC  
-- 📊 **Pool Analytics** — live reserves, liquidity share, and ratio display  
-- 🔐 **Approval Flow** — secure token approval before adding liquidity  
-- 🛡️ **Security** — protected by `ReentrancyGuard` and safe ratio handling  
-- 🧩 **Frontend Ready** — integrated with wallet (wagmi + RainbowKit)
+A simple decentralized exchange (DEX) built on **Lisk Sepolia**, allowing users to add/remove liquidity and swap tokens through an automated market maker (AMM) model (x * y = k).
 
 ---
 
-## 📄 Deployed Contracts (Lisk Sepolia)
+## 🚀 Live Demo  
+**Frontend:**  
+👉 https://lisk-challenge-week6.vercel.app 
+
+---
+
+## 🔗 Contract Addresses (Lisk Sepolia)
 
 | Contract | Address |
-|-----------|-----------|
+|-----------|--------------------------------------------|
 | **MyToken** | `0x720eABB9e58F62454c98a70432D456009B9a1c8c` |
 | **SimpleUSDC** | `0xD90EB856847335A0A3Ab40C029f85A730670e579` |
 | **SimpleDEX** | `0x22e4fB838dBE14BD1Fc2e9dB96c50A2Ae2D118D0` |
-| **PriceFeed** | `0x1f65aF04ce142D05e31A6ad454F8926480da8Cba` |
-| **Network** | Lisk Sepolia |
-| **RPC** | https://rpc.sepolia-api.lisk.com |
+
+### ✅ Verified on Blockscout  
+- [MyToken](https://sepolia-blockscout.lisk.com/address/0x720eABB9e58F62454c98a70432D456009B9a1c8c)  
+- [SimpleUSDC](https://sepolia-blockscout.lisk.com/address/0xD90EB856847335A0A3Ab40C029f85A730670e579)  
+- [SimpleDEX](https://sepolia-blockscout.lisk.com/address/0x22e4fB838dBE14BD1Fc2e9dB96c50A2Ae2D118D0)  
 
 ---
 
-## 🧭 How It Works
-1. **Approve Tokens** — users must approve DEX to spend MyToken & SimpleUSDC  
-2. **Add Liquidity** — both tokens are deposited to the pool  
-3. **Remove Liquidity** — users burn LP tokens to reclaim assets  
-4. **Swap** — trades are processed using the constant product formula (x * y = k)
+## 🧠 Core Features
+
+- 💧 **Add / Remove Liquidity**  
+  Users can provide or withdraw `MyToken` + `SimpleUSDC` to earn LP shares  
+
+- 🔁 **Swap Functionality**  
+  Supports instant token swaps using constant product AMM (x * y = k)  
+
+- 📊 **Pool Stats Dashboard**  
+  Displays live reserves, pool ratio, and user liquidity share  
+
+- 🦊 **Wallet Connection**  
+  Integrated with `wagmi` + `viem` for seamless wallet connection  
+
+- 🎨 **UI/UX**  
+  Built with **Next.js + TailwindCSS**, deployed on **Vercel**  
 
 ---
 
-## 🧰 Tech Stack
-- **Solidity / Hardhat** — smart contracts  
-- **Next.js / TypeScript** — frontend  
-- **TailwindCSS** — UI styling  
-- **wagmi + viem + RainbowKit** — wallet integration  
-- **Lisk Sepolia RPC** — network connection  
+## 🧾 Transactions
+
+| Action | Tx Hash | Explorer Link |
+|---------|----------|----------------|
+| **Approval (MyToken)** | `0xf53f63f9a5a7d72719d1870ade402dbe4d7ad95a441765027aad616bc34721e9` | [View](https://sepolia-blockscout.lisk.com/tx/0xf53f63f9a5a7d72719d1870ade402dbe4d7ad95a441765027aad616bc34721e9) |
+| **Approval (SimpleUSDC)** | `0xd1e9b39755d9e687f99437c72353d495ccd0a123db8a1446ced46bb26efb6447` | [View](https://sepolia-blockscout.lisk.com/tx/0xd1e9b39755d9e687f99437c72353d495ccd0a123db8a1446ced46bb26efb6447) |
+| **Add Liquidity** | `0x176705c80082118569fd31df58ce1888211aef28c2496e4647536aa5ae8d36a4` | [View](https://sepolia-blockscout.lisk.com/tx/0x176705c80082118569fd31df58ce1888211aef28c2496e4647536aa5ae8d36a4) |
+| **Swap** | `0xc2cb1033651030686cc1a020ddbc188958c0d222c0a61e928244e0253d83dd47` | [View](https://sepolia-blockscout.lisk.com/tx/0xc2cb1033651030686cc1a020ddbc188958c0d222c0a61e928244e0253d83dd47) |
+| **Remove Liquidity** | `0x2ad3fe16877e39a694e400924cba45c2b75d71d92f387381c0f7ab4edee18b7c` | [View](https://sepolia-blockscout.lisk.com/tx/0x2ad3fe16877e39a694e400924cba45c2b75d71d92f387381c0f7ab4edee18b7c) |
 
 ---
 
-## 🚀 Run Locally
+## 🧱 Tech Stack
+
+- **Frontend:** Next.js, TailwindCSS, Wagmi, Viem  
+- **Smart Contracts:** Solidity, Hardhat  
+- **Network:** Lisk Sepolia  
+- **Deployment:** Vercel  
+
+---
+
+## 📦 Repository
+
+**GitHub:** [https://github.com/SZtch/lisk-challenge-week6](https://github.com/SZtch/lisk-challenge-week6)
+
+---
+
+## 🧠 How to Run Locally
 
 ```bash
-# install deps
-yarn install
-
-# compile contracts
-yarn hardhat compile
-
-# deploy locally
-yarn deploy
-
-# deploy to Lisk Sepolia
-yarn deploy --network liskSepolia
-
-# start frontend
+git clone https://github.com/SZtch/lisk-challenge-week6.git
 cd packages/nextjs
+yarn install
 yarn dev
-
-🧑‍💻 Author
-
-@SZtch — builder exploring DeFi on Lisk
