@@ -4,7 +4,15 @@ import React, { useCallback, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Logo } from "./Logo";
-import { Bars3Icon, CurrencyDollarIcon, HomeIcon, SparklesIcon } from "@heroicons/react/24/outline";
+import {
+  Bars3Icon,
+  CurrencyDollarIcon,
+  HomeIcon,
+  ClockIcon,
+  ArrowsRightLeftIcon,
+  ShoppingBagIcon,
+  SparklesIcon,
+} from "@heroicons/react/24/outline";
 import {
   DappConsoleButton,
   FaucetButton,
@@ -22,10 +30,11 @@ type HeaderMenuLink = {
 
 export const menuLinks: HeaderMenuLink[] = [
   { label: "Home", href: "/", icon: <HomeIcon className="h-4 w-4" /> },
-  { label: "Events", href: "/events" },
+  { label: "Events", href: "/events", icon: <ClockIcon className="h-4 w-4" /> },
+  { label: "Marketplace", href: "/marketplace", icon: <ShoppingBagIcon className="h-4 w-4" /> },
+  { label: "DEX", href: "/dex", icon: <ArrowsRightLeftIcon className="h-4 w-4" /> },
   { label: "Oracle", href: "/oracle", icon: <CurrencyDollarIcon className="h-4 w-4" /> },
   { label: "Gasless", href: "/gasless", icon: <SparklesIcon className="h-4 w-4" /> },
-  { label: "Block Explorer", href: "/blockexplorer" },
 ];
 
 export const HeaderMenuLinks = () => {
@@ -66,13 +75,14 @@ export const Header = () => {
   return (
     <header className="sticky lg:static top-0 navbar bg-base-900 min-h-0 flex-shrink-0 justify-between z-20 px-0 sm:px-2 border-b border-[#252442]">
       <div className="navbar-start w-auto lg:w-1/2">
+        {/* Mobile dropdown */}
         <div className="lg:hidden dropdown" ref={burgerMenuRef}>
           <label
             tabIndex={0}
             className={`ml-1 btn btn-ghost ${isDrawerOpen ? "hover:bg-secondary" : "hover:bg-transparent"}`}
             onClick={() => setIsDrawerOpen(prev => !prev)}
           >
-            <Bars3Icon className="h-1/2" />
+            <Bars3Icon className="h-5 w-5" />
           </label>
           {isDrawerOpen && (
             <ul
@@ -85,6 +95,7 @@ export const Header = () => {
           )}
         </div>
 
+        {/* Logo + title */}
         <Link href="/" passHref className="hidden lg:flex items-center gap-2 ml-4 mr-6 shrink-0">
           <div className="flex relative">
             <Logo size={24} />
@@ -95,6 +106,7 @@ export const Header = () => {
           </div>
         </Link>
 
+        {/* Menu links */}
         <ul className="hidden lg:flex lg:flex-nowrap menu menu-horizontal px-1 gap-2">
           <HeaderMenuLinks />
         </ul>

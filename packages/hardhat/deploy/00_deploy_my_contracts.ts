@@ -1,29 +1,26 @@
-import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { DeployFunction } from "hardhat-deploy/types";
+import { HardhatRuntimeEnvironment } from "hardhat/types";
 
-const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
-  const { deploy } = hre.deployments;
+const deployContracts: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const { deployer } = await hre.getNamedAccounts();
+  const { deploy } = hre.deployments;
 
-  console.log("🚀 Deploying MyToken and MyNFT...");
-
-  const token = await deploy("MyToken", {
+  // Deploy MyToken
+  await deploy("MyToken", {
     from: deployer,
     args: [],
     log: true,
     autoMine: true,
   });
 
-  const nft = await deploy("MyNFT", {
+  // Deploy SimpleUSDC
+  await deploy("SimpleUSDC", {
     from: deployer,
     args: [],
     log: true,
     autoMine: true,
   });
-
-  console.log(`✅ MyToken deployed at: ${token.address}`);
-  console.log(`✅ MyNFT deployed at: ${nft.address}`);
 };
 
-export default func;
-func.tags = ["MyToken", "MyNFT"];
+export default deployContracts;
+deployContracts.tags = ["MyToken", "SimpleUSDC"];
